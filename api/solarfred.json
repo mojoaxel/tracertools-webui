@@ -1,0 +1,13 @@
+{ 
+	"class": "sensors", 
+	"bat_volt": 11.96, 
+	"bat_volt_min": 10.96,
+	"bat_volt_max": 14.67, 
+	"in1_volt": 31.51, 
+	"in1_amp": 0.25, 
+	"in2_amp": 0.16, 
+	"temp1": 9, 
+	"chg_state": 
+	"charging", 
+	"load_switch": 1 
+}

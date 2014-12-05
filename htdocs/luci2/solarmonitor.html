@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>LuCI2</title>
+
+		<link rel="stylesheet" href="/luci2/css/bootstrap.css">
+		<link rel="stylesheet" href="/luci2/css/luci2.css">
+
+		<!--[if lt IE 9]>
+			<script src="/luci2/html5.js"></script>
+			<script src="/luci2/respond.min.js"></script>
+		<![endif]-->
+
+		<script type="text/javascript" src="/luci2/jquery-1.9.1.js"></script>
+		<script type="text/javascript" src="/luci2/jquery.peity.js"></script>
+		<script type="text/javascript" src="/luci2/bootstrap.js"></script>
+		<script type="text/javascript" src="/luci2/luci2.js"></script>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+		<style type="text/css">
+			#maincontent {
+				text-align: center;
+			}
+			.container-fluid .row-fluid > div {
+				/* border: 1px solid lightgray; */
+				padding: 1%;
+			}
+			.tracerwidgets {
+				max-width: 800px;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			
+			.tracerwidgets .row-fluid:first-child {
+				height: 80px;
+			}
+			
+			h1 > small {
+				display: block;
+				font-size: 12px;
+			}
+			h1 .value {
+				font-weight: bold;
+				font-size: 2em;
+			}
+			
+			.center-gauge .title {
+				font-size: 15px;
+				line-height: normal;
+				font-family: Arial;
+				color: #999;
+				font-weight: bold;
+				padding: 12px 0px 5px 0px;
+			}
+			
+			#bat_volt {
+				height: 300px;
+			}
+			
+			#cf-gauge-1 {
+				width: 100%;
+			}
+			
+			h4.btn-title {
+				font-size: 12px;
+				margin-bottom: 2px;
+			}
+			
+			#solarselect {
+				margin-top: 20px;
+			}
+			
+			dl.valuelist {
+				tex-align: left;
+			}
+			dl.valuelist dt {
+				display: inline-block;
+				width: 50%;
+				text-align: right;
+			}
+			dl.valuelist dt:after {
+				content: ":";
+				padding-right: 5px;
+			}
+			dl.valuelist dd {
+				display: inline-block;
+				width: 50%;
+				text-align: left;
+				padding-left: 5px;
+			}
+		</style>
+
+		<script type="text/javascript">
+			$(function() {
+				/*
+				var L = new LuCI2();
+
+				L.ui.login().then(function() {
+					L.ui.init();
+				});
+				*/
+			});
+		</script>
+	</head>
+	<body>
+		<div class="navbar navbar-inverse navbar-fixed-top" role="banner">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#" id="hostname">&nbsp;</a>
+				</div>
+				<div class="collapse navbar-collapse" id="mainmenu"></div>
+			</div>
+		</div>
+
+		<div id="viewmenu"></div>
+
+		<div id="maincontent" class="container">
+
+		<div class="container-fluid tracerwidgets">
+			<div class="row-fluid">
+				<div class="col-xs-6 col-md-4">
+					<select class="form-control" id="solarselect">
+						<option>solar21</option>
+						<option>solar31</option>
+						<option>solar41</option>
+					</select>
+				</div>
+				
+				<div class="col-xs-6 col-md-4"><h1>Tracertools</h1></div>
+				<div class="col-xs-6 col-md-4">
+					<div class="row-fluid">
+						<div class="col-xs-6">
+							<h4 class="btn-title">Expert</h4>
+							<div class="btn-group btn-toggle"> 
+								<button class="btn btn-sm btn-default">ON</button>
+								<button class="btn btn-sm btn-primary active">OFF</button>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<h4 class="btn-title">Load</h4>
+							<div class="btn-group btn-toggle""> 
+								<button class="btn btn-sm btn-default active">ON</button>
+								<button class="btn btn-sm btn-primary">OFF</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row-fluid">
+				<div class="col-md-3"><h1><span class="value">18.80</span> <small>Solar Ampere</small></h1></div>
+				<div class="col-md-6"><div id="bat_volt"></div></div>
+				<div class="col-md-3"><h1><span class="value">2.80</span> <small>Load Ampere</small></h1></div>
+			</div>
+			
+			<div class="row-fluid">
+				<div class="col-xs-6 col-md-4"><div id="in1_amp"></div></div>
+				<div class="col-xs-6 col-md-4">
+					<h4>Solar Data</h4>
+					<dl class="valuelist">
+						<dt>pv voltage</dt><dd>36.42V</dd>
+						<dt>battery flow</dt><dd>-34.16 W</dd>
+						<dt>temperature</dt><dd>24 &deg;C</dd>
+						<dt>alarms</dt><dd>no</dd>
+						<dt>date</dt><dd>Sa. 12. Oct. 2014</dd>
+						<dt>time</dt><dd>11:24:35</dd>
+					</dl>
+				</div>
+				<div class="col-xs-6 col-md-4">
+				
+				<div class="center-gauge">
+				<div class="title">Ampere Diffenrenz</div>
+					<canvas id="cf-gauge-1"></canvas>
+				</div>
+				
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="/luci2/js/raphael.2.1.0.min.js"></script>
+		<script type="text/javascript" src="/luci2/js/justgage.1.0.1.min.js"></script>
+		<script type="text/javascript" src="/luci2/js/gauge.min.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				var dummy = {
+						"modules": [{
+							"mac": "7a:67:f3:8f:65:1e", 
+							"name": "solar21",
+							"datetime": "Thu Dec  4 13:04:59 CET 2014",
+							"bat_volt": 11.96, 
+							"bat_volt_min": 10.96,
+							"bat_volt_max": 14.67, 
+							"in1_volt": 31.51, 
+							"in1_amp": 0.25, 
+							"in2_amp": 0.16, 
+							"temp1": 9, 
+							"chg_state": 1,
+							"charging": 1,
+							"load_switch": 1
+						}]
+					};
+				
+				var bat_volt = new JustGage({
+					id: "bat_volt", 
+					value: dummy.modules[0].bat_volt, 
+					min: dummy.modules[0].bat_volt_min,
+					max: dummy.modules[0].bat_volt_max,
+					title: "Battery Voltage",
+					label: "Volt",
+					gaugeWidthScale: 0.9,
+					levelColors: [ "#FF0000", "#FF9900", "#33CC33" ]
+				});
+				
+				/*
+				var in1_volt = new JustGage({
+					id: "in1_volt", 
+					value: dummy.modules[0].in1_volt, 
+					min: dummy.modules[0].bat_volt_min,
+					max: dummy.modules[0].bat_volt_max,
+					title: "Battery Voltage",
+					label: "Volt",
+					gaugeWidthScale: 0.9
+				});
+				*/
+				
+				var in1_amp = new JustGage({
+					id: "in1_amp", 
+					value: dummy.modules[0].in1_amp, 
+					min: 0,
+					max: 1,
+					title: "Battery Voltage",
+					label: "Ampare",
+					gaugeWidthScale: 0.3,
+					//gaugeColor: "transparent",
+					levelColors: ["#000000"],
+					showMinMax: false,
+					showInnerShadow: false
+				});
+				
+				/*
+				var in2_amp = new JustGage({
+					id: "in2_amp", 
+					value: dummy.modules[0].in2_amp, 
+					min: -100,
+					max: 100,
+					title: "Battery Load",
+					label: "Volt",
+					gaugeWidthScale: 0.9,
+					levelColors: [ "#FF0000", "#000000", "#33CC33" ],
+					showMinMax: false
+				});
+				*/
+				
+				var opts = {
+					lines: 1, // The number of lines to draw
+					angle: 0.15, // The length of each line
+					lineWidth: 0.14, // The line thickness
+					pointer: {
+						length: 0.9, // The radius of the inner circle
+						strokeWidth: 0.025, // The rotation offset
+						color: '#000000' // Fill color
+					},
+					limitMax: 'true',   // If true, the pointer will not go past the end of the gauge
+					colorStart: '#FF0000',   // Colors
+					colorStop: '#FF0000',    // just experiment with them
+					strokeColor: '#00FF00',   // to see which ones work best for you
+					generateGradient: true
+					};
+				var target = document.getElementById('cf-gauge-1'); // your canvas element
+				var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+				gauge.minValue = 0; // set max gauge value
+				gauge.maxValue = 200; // set max gauge value
+				gauge.animationSpeed = 5; // set animation speed (32 is default value)
+				gauge.set(100); // set actual value
+				
+				setInterval(function() {
+					dummy.modules[0].bat_volt = getRandomInt(dummy.modules[0].bat_volt_min*100, dummy.modules[0].bat_volt_max*100)/100;
+					//dummy.modules[0].in1_volt = getRandomInt(dummy.modules[0].bat_volt_min, dummy.modules[0].bat_volt_max);
+					dummy.modules[0].in1_amp = getRandomInt(0, 1);
+					//dummy.modules[0].in2_amp = getRandomInt(-100, 100);
+					load = getRandomInt(-100, 100);
+					
+					bat_volt.refresh(dummy.modules[0].bat_volt.toFixed(2));
+					//in1_volt.refresh(dummy.modules[0].in1_volt.toFixed(2));
+					in1_amp.refresh(dummy.modules[0].in1_amp.toFixed(2));
+					//in2_amp.refresh(dummy.modules[0].in2_amp.toFixed(2));
+					gauge.set(load+100);
+				}, 2500);
+			});
+		</script>
+
+		</div>
+<!--
+		<footer>
+			<a href="http://luci.subsignal.org/">Powered by LuCI Trunk (git-8b6d8db)</a>
+			OpenWrt Barrier Breaker r37529
+		</footer>
+-->
+	</body>
+</html>
