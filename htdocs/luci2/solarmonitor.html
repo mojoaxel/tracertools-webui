@@ -3,18 +3,18 @@
 	<head>
 		<title>LuCI2</title>
 
-		<link rel="stylesheet" href="/luci2/css/bootstrap.css">
-		<link rel="stylesheet" href="/luci2/css/luci2.css">
+		<link rel="stylesheet" href="css/bootstrap.css">
+		<link rel="stylesheet" href="css/luci2.css">
 
 		<!--[if lt IE 9]>
 			<script src="/luci2/html5.js"></script>
 			<script src="/luci2/respond.min.js"></script>
 		<![endif]-->
 
-		<script type="text/javascript" src="/luci2/jquery-1.9.1.js"></script>
-		<script type="text/javascript" src="/luci2/jquery.peity.js"></script>
-		<script type="text/javascript" src="/luci2/bootstrap.js"></script>
-		<script type="text/javascript" src="/luci2/luci2.js"></script>
+		<script type="text/javascript" src="jquery-1.9.1.js"></script>
+		<script type="text/javascript" src="jquery.peity.js"></script>
+		<script type="text/javascript" src="bootstrap.js"></script>
+		<script type="text/javascript" src="luci2.js"></script>
 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -187,10 +187,10 @@
 			</div>
 		</div>
 
-		<script type="text/javascript" src="/luci2/js/raphael.2.1.0.min.js"></script>
-		<script type="text/javascript" src="/luci2/js/justgage.1.0.1.min.js"></script>
-		<script type="text/javascript" src="/luci2/js/moment.min.js"></script>
-		<script type="text/javascript" src="/luci2/js/gauge.min.js"></script>
+		<script type="text/javascript" src="js/raphael.2.1.0.min.js"></script>
+		<script type="text/javascript" src="js/justgage.1.0.1.min.js"></script>
+		<script type="text/javascript" src="js/moment.min.js"></script>
+		<script type="text/javascript" src="js/gauge.min.js"></script>
 		<script type="text/javascript">
 			$(function() {
 				var dummy = {
@@ -264,7 +264,7 @@
 				gauge.set(100); // set actual value
 				
 				function update() {
-					$.getJSON('http://192.168.10.107/tracertools-webui/api/solarfred.json.php', function(data) {
+					$.getJSON('http://freifunk.info-screen.net/tracertools-webui/api/solarfred.json.php', function(data) {
 						//console.log(data);
 						
 						$('#solarselect').empty();
