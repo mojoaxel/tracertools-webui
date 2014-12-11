@@ -39,7 +39,7 @@
 			
 			h1 > small {
 				display: block;
-				font-size: 12px;
+				font-size: 14px;
 			}
 			h1 .value {
 				font-weight: bold;
@@ -90,6 +90,9 @@
 				text-align: left;
 				padding-left: 5px;
 			}
+			
+			.green { color: #33CC33; }
+			.red { color: #FF0000; }
 		</style>
 
 		<script type="text/javascript">
@@ -127,9 +130,6 @@
 			<div class="row-fluid">
 				<div class="col-xs-6 col-md-4">
 					<select class="form-control" id="solarselect">
-						<option>solar21</option>
-						<option>solar31</option>
-						<option>solar41</option>
 					</select>
 				</div>
 				
@@ -139,15 +139,15 @@
 						<div class="col-xs-6">
 							<h4 class="btn-title">Expert</h4>
 							<div class="btn-group btn-toggle"> 
-								<button class="btn btn-sm btn-default">ON</button>
-								<button class="btn btn-sm btn-primary active">OFF</button>
+								<button class="btn btn-sm btn-default expert on">ON</button>
+								<button class="btn btn-sm btn-primary expert off active">OFF</button>
 							</div>
 						</div>
 						<div class="col-xs-6">
 							<h4 class="btn-title">Load</h4>
 							<div class="btn-group btn-toggle""> 
-								<button class="btn btn-sm btn-default active">ON</button>
-								<button class="btn btn-sm btn-primary">OFF</button>
+								<button class="btn btn-sm btn-default load on">ON</button>
+								<button class="btn btn-sm btn-primary load off active">OFF</button>
 							</div>
 						</div>
 					</div>
@@ -155,9 +155,9 @@
 			</div>
 			
 			<div class="row-fluid">
-				<div class="col-md-3"><h1><span class="value">18.80</span> <small>Solar Ampere</small></h1></div>
+				<div class="col-md-3"><h1><span class="value green in1_amp">?</span><small>Solar Ampere</small></h1></div>
 				<div class="col-md-6"><div id="bat_volt"></div></div>
-				<div class="col-md-3"><h1><span class="value">2.80</span> <small>Load Ampere</small></h1></div>
+				<div class="col-md-3"><h1><span class="value red in2_amp">?</span><small>Load Ampere</small></h1></div>
 			</div>
 			
 			<div class="row-fluid">
@@ -165,12 +165,12 @@
 				<div class="col-xs-6 col-md-4">
 					<h4>Solar Data</h4>
 					<dl class="valuelist">
-						<dt>pv voltage</dt><dd>36.42V</dd>
-						<dt>battery flow</dt><dd>-34.16 W</dd>
-						<dt>temperature</dt><dd>24 &deg;C</dd>
-						<dt>alarms</dt><dd>no</dd>
-						<dt>date</dt><dd>Sa. 12. Oct. 2014</dd>
-						<dt>time</dt><dd>11:24:35</dd>
+						<dt>pv voltage</dt><dd class="in1_volt">? V</dd>
+						<dt>battery flow</dt><dd class="in_power">? W</dd>
+						<dt>temperature</dt><dd class="temp1">? &deg;C</dd>
+						<!-- dt>alarms</dt><dd>no</dd -->
+						<dt>date</dt><dd class="date">?</dd>
+						<dt>time</dt><dd class="time">?</dd>
 					</dl>
 				</div>
 				<div class="col-xs-6 col-md-4">
@@ -178,6 +178,9 @@
 				<div class="center-gauge">
 				<div class="title">Ampere Diffenrenz</div>
 					<canvas id="cf-gauge-1"></canvas>
+					<!-- div id="cf-gauge-max">+100%</div -->
+					<div id="cf-gauge-value">? %</div>
+					<!-- div id="cf-gauge-min">-100%</div -->
 				</div>
 				
 				</div>
@@ -186,79 +189,61 @@
 
 		<script type="text/javascript" src="/luci2/js/raphael.2.1.0.min.js"></script>
 		<script type="text/javascript" src="/luci2/js/justgage.1.0.1.min.js"></script>
+		<script type="text/javascript" src="/luci2/js/moment.min.js"></script>
 		<script type="text/javascript" src="/luci2/js/gauge.min.js"></script>
 		<script type="text/javascript">
 			$(function() {
 				var dummy = {
 						"modules": [{
-							"mac": "7a:67:f3:8f:65:1e", 
-							"name": "solar21",
-							"datetime": "Thu Dec  4 13:04:59 CET 2014",
-							"bat_volt": 11.96, 
-							"bat_volt_min": 10.96,
-							"bat_volt_max": 14.67, 
-							"in1_volt": 31.51, 
-							"in1_amp": 0.25, 
-							"in2_amp": 0.16, 
-							"temp1": 9, 
-							"chg_state": 1,
-							"charging": 1,
-							"load_switch": 1
+							mac: "??????????",
+							name: "",
+							datetime: null,
+							bat_volt: 0,
+							bat_volt_min: 10.8,
+							bat_volt_max: 14.2,
+							in1_volt: 0,
+							in1_amp: 0,
+							in2_amp: 0,
+							temp1: null,
+							chg_state: 1,
+							charging: 1,
+							load_switch: 0
 						}]
 					};
 				
+				var module = dummy.modules[0];
+				
 				var bat_volt = new JustGage({
 					id: "bat_volt", 
-					value: dummy.modules[0].bat_volt, 
-					min: dummy.modules[0].bat_volt_min,
-					max: dummy.modules[0].bat_volt_max,
+					value: 14, 
+					min: module.bat_volt_min,
+					max: module.bat_volt_max,
 					title: "Battery Voltage",
 					label: "Volt",
 					gaugeWidthScale: 0.9,
-					levelColors: [ "#FF0000", "#FF9900", "#33CC33" ]
+					startAnimationTime: 2,
+					startAnimationType: "bounce",
+					refreshAnimationType: ">",
+					levelColorsGradient: false,
+					levelColors: [ "#FF0000", "#33CC33", "#00FF00" ]
 				});
 				
-				/*
-				var in1_volt = new JustGage({
-					id: "in1_volt", 
-					value: dummy.modules[0].in1_volt, 
-					min: dummy.modules[0].bat_volt_min,
-					max: dummy.modules[0].bat_volt_max,
-					title: "Battery Voltage",
-					label: "Volt",
-					gaugeWidthScale: 0.9
-				});
-				*/
 				
 				var in1_amp = new JustGage({
 					id: "in1_amp", 
-					value: dummy.modules[0].in1_amp, 
+					value: '?', 
 					min: 0,
-					max: 1,
-					title: "Battery Voltage",
+					max: 3,
+					title: "Battery Current",
 					label: "Ampare",
 					gaugeWidthScale: 0.3,
-					//gaugeColor: "transparent",
 					levelColors: ["#000000"],
 					showMinMax: false,
 					showInnerShadow: false
 				});
 				
-				/*
-				var in2_amp = new JustGage({
-					id: "in2_amp", 
-					value: dummy.modules[0].in2_amp, 
-					min: -100,
-					max: 100,
-					title: "Battery Load",
-					label: "Volt",
-					gaugeWidthScale: 0.9,
-					levelColors: [ "#FF0000", "#000000", "#33CC33" ],
-					showMinMax: false
-				});
-				*/
-				
-				var opts = {
+				var target = document.getElementById('cf-gauge-1'); // your canvas element
+				var gauge = new Gauge(target).setOptions({
 					lines: 1, // The number of lines to draw
 					angle: 0.15, // The length of each line
 					lineWidth: 0.14, // The line thickness
@@ -272,27 +257,68 @@
 					colorStop: '#FF0000',    // just experiment with them
 					strokeColor: '#00FF00',   // to see which ones work best for you
 					generateGradient: true
-					};
-				var target = document.getElementById('cf-gauge-1'); // your canvas element
-				var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+				}); // create sexy gauge!
 				gauge.minValue = 0; // set max gauge value
 				gauge.maxValue = 200; // set max gauge value
-				gauge.animationSpeed = 5; // set animation speed (32 is default value)
+				gauge.animationSpeed = 1; // set animation speed (32 is default value)
 				gauge.set(100); // set actual value
 				
+				function update() {
+					$.getJSON('http://192.168.10.107/tracertools-webui/api/solarfred.json.php', function(data) {
+						//console.log(data);
+						
+						$('#solarselect').empty();
+						$.each(data.modules, function(index, module) {
+							$('#solarselect').append($('<option>' + module.name + '</option>'));
+						});
+						
+						var module = data.modules[0];
+						
+						module.bat_volt = parseFloat(module.bat_volt);
+						module.bat_volt_min = parseFloat(module.bat_volt_min);
+						module.bat_volt_max = parseFloat(module.bat_volt_max);
+						module.in1_volt = parseFloat(module.in1_volt);
+						module.in1_amp = parseFloat(module.in1_amp);
+						module.in2_amp = parseFloat(module.in2_amp);
+						module.temp1 = parseFloat(module.temp1);
+						
+						var $valuelist = $('.valuelist');
+						$valuelist.find('.in1_volt').text(module.in1_volt + " V");
+						$valuelist.find('.in_power').text((module.in1_volt * (module.in1_amp-module.in2_amp)).toFixed(2) + " W");
+						$valuelist.find('.temp1').html(module.temp1 + " &deg;C");
+						$valuelist.find('.alarms').text("no");
+						var date = moment(module.datetime.replace('CET ', '').substr(4), "MMMM D h:m:s GGGG");
+						$valuelist.find('.date').text(date.format("DD.MM.YY"));
+						$valuelist.find('.time').text(date.format("HH:mm:ss"));
+						
+						$('.value.in1_amp').text('+' + module.in1_amp.toFixed(2));
+						$('.value.in2_amp').text('-' + module.in2_amp.toFixed(2));
+						
+						bat_volt.refresh(
+								module.bat_volt.toFixed(2)
+						);
+						in1_amp.refresh(
+								module.in1_amp.toFixed(2)
+						);
+						
+						var ampDiffPercent = null;
+						if (module.in1_amp >= module.in2_amp) {
+							ampDiffPercent = 100 - 100 * (module.in2_amp/module.in1_amp);
+							//$('#cf-gauge-value').removeClass('red').addClass('green');
+						} else {
+							ampDiffPercent =  - 100 + 100 * (module.in1_amp/module.in2_amp);
+							//$('#cf-gauge-value').removeClass('green').addClass('red');
+						}
+						gauge.animationSpeed = 5;
+						gauge.set(100-ampDiffPercent); // set actual value
+						$('#cf-gauge-value').text(ampDiffPercent.toFixed(2) + "%");
+					});
+				}
+				
+				update();
 				setInterval(function() {
-					dummy.modules[0].bat_volt = getRandomInt(dummy.modules[0].bat_volt_min*100, dummy.modules[0].bat_volt_max*100)/100;
-					//dummy.modules[0].in1_volt = getRandomInt(dummy.modules[0].bat_volt_min, dummy.modules[0].bat_volt_max);
-					dummy.modules[0].in1_amp = getRandomInt(0, 1);
-					//dummy.modules[0].in2_amp = getRandomInt(-100, 100);
-					load = getRandomInt(-100, 100);
-					
-					bat_volt.refresh(dummy.modules[0].bat_volt.toFixed(2));
-					//in1_volt.refresh(dummy.modules[0].in1_volt.toFixed(2));
-					in1_amp.refresh(dummy.modules[0].in1_amp.toFixed(2));
-					//in2_amp.refresh(dummy.modules[0].in2_amp.toFixed(2));
-					gauge.set(load+100);
-				}, 2500);
+					update();
+				}, 29999);
 			});
 		</script>
 
