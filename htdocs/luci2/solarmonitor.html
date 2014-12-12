@@ -313,12 +313,13 @@
 						gauge.set(100-ampDiffPercent); // set actual value
 						$('#cf-gauge-value').text(ampDiffPercent.toFixed(2) + "%");
 					});
+					
+					setInterval(function() {
+						update();
+					}, 29999);
 				}
 				
 				update();
-				setInterval(function() {
-					update();
-				}, 29999);
 			});
 		</script>
 
